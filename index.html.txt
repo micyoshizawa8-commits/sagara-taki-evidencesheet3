@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>タキ倉庫 相良営業所 前工程不良エビデンスシート</title>
+    
+    <!-- PWA / Web App Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="不具合報告">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/180/007bff/ffffff?text=Evidence">
+
+    <style>
+        body { 
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; 
+            margin: 10px; 
+            background-color: #f0f2f5; 
+            color: #333; 
+            font-size: 14px;
+            overscroll-behavior-y: contain;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
+        
+        /* Header / Stamps */
+        .header-area { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .title-group { flex-grow: 1; }
+        .stamp-table { border-collapse: collapse; }
+        .stamp-table td { border: 1px solid #333; width: 75px; height: 75px; text-align: center; vertical-align: top; font-size: 10px; padding: 0; }
+        .stamp-label { height: 20px !important; background: #f8f9fa; font-weight: bold; line-height: 20px; border-bottom: 1px solid #333; }
+
+        h1 { text-align: left; color: #1a1a1a; border-left: 5px solid #007bff; padding-left: 15px; margin: 0; font-size: 1.4rem; }
+        .subtitle { font-size: 0.9rem; color: #666; margin-top: 5px; padding-left: 20px; }
+        
+        /* Tables */
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fff; }
+        .info-table th, .info-table td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+        .info-table th { background-color: #f8f9fa; width: 15%; font-weight: bold; color: #495057; }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ced4da; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            border-radius: 6px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #007bff; outline: none; background: #fcfdfe; }
+        
+        /* Drawing Area */
+        .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
+        .work-column { border: 1px solid #dee2e6; border-radius: 8px; display: flex; flex-direction: column; background: #fff; overflow: hidden; }
+        .section-title { background: #495057; color: white; padding: 10px; font-weight: bold; text-align: center; font-size: 0.95rem; }
+        
+        .canvas-container { position: relative; width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e9ecef; }
+        canvas { cursor: crosshair; touch-action: none; background: transparent; }
+
+        .controls { padding: 10px; display: flex; gap: 10px; justify-content: center; background: #f8f9fa; border-top: 1px solid #dee2e6; }
+        .btn { padding: 8px 16px; font-weight: bold; cursor: pointer; border-radius: 6px; border: 1px solid #adb5bd; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-photo { background: #007bff; color: white; border: none; }
+        .btn-clear { background: #fff; color: #495057; }
+
+        /* Action Buttons */
+        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+        .btn-main { padding: 20px; font-size: 1.1rem; font-weight: bold; border-radius: 10px; cursor: pointer; border: none; transition: transform 0.1s, opacity 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-main:active { transform: translateY(2px); box-shadow: none; }
+        .btn-print { background: #6c757d; color: white; }
+        .btn-save { background: #28a745; color: white; }
+
+        .placeholder-text { position: absolute; color: #adb5bd; text-align: center; pointer-events: none; width: 80%; font-style: italic; }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .work-grid { grid-template-columns: 1fr; }
+            .header-area { flex-direction: column; }
+            .stamp-table { margin-top: 15px; align-self: flex-end; }
+            .action-buttons { grid-template-columns: 1fr; padding-bottom: 50px; }
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; background: white; }
+            .container { width: 100%; border: none; padding: 0; box-shadow: none; max-width: none; }
+            .work-column { border: 1px solid #333; page-break-inside: avoid; }
+            .work-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            input, select, textarea { border: none; background: transparent; padding: 0; appearance: none; }
+        }
+    </style>
+    <!-- Library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<div class="container" id="capture-area">
+    <div class="header-area">
+        <div class="title-group">
+            <h1>タキ倉庫 相良営業所 前工程不良エビデンスシート</h1>
+            <div class="subtitle">※不具合を発見次第、速やかに撮影・記入を行い保存してください</div>
+        </div>
+        <table class="stamp-table">
+            <tr>
+                <td class="stamp-label">小糸製作所</td>
+                <td class="stamp-label">上位者</td>
+                <td class="stamp-label">作成者</td>
+            </tr>
+            <tr><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <th>発見日</th><td><input type="date" id="discoveryDate"></td>
+            <th>発見者</th><td><input type="text" id="discoverer" placeholder="氏名を入力"></td>
+        </tr>
+        <tr>
+            <th>かんばんNo.</th><td><input type="text" id="kanbanNo" placeholder="かんばん番号を入力"></td>
+            <th>製造ロット</th><td><input type="text" id="lotNo" placeholder="ロット番号を入力"></td>
+        </tr>
+        <tr>
+            <th>不具合事象</th>
+            <td colspan="3">
+                <select id="defectType">
+                    <option value="">-- 不具合の種類を選択 --</option>
+                    <option value="レンズ傷">レンズ傷</option>
+                    <option value="部品欠品">部品欠品</option>
+                    <option value="防水キャップ不足">防水キャップ不足</option>
+                    <option value="ハウジング破損">ハウジング破損</option>
+                    <option value="異物混入">異物混入</option>
+                    <option value="その他">その他</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>詳細内容</th>
+            <td colspan="3"><textarea id="details" rows="2" placeholder="具体的な状況を記入してください"></textarea></td>
+        </tr>
+    </table>
+
+    <div class="work-grid">
+        <div class="work-column">
+            <div class="section-title">不具合箇所（拡大写真）</div>
+            <div class="controls no-print">
+                <label class="btn btn-photo">
+                    📷 写真を撮る
+                    <input type="file" onchange="handleImage(this, 'canvas_detail')" accept="image/*" capture="environment" style="display:none;">
+                </label>
+                <button class="btn btn-clear" onclick="clearCanvas('canvas_detail')">リセット</button>
+            </div>
+            <div class="canvas-container" id="container_detail">
+                <canvas id="canvas_detail"></canvas>
+                <div class="placeholder-text" id="text_detail">タップして写真を撮影または選択</div>
+            </div>
+        </div>
+
+        <div class="work-column">
+            <div class="section-title">全体マップ（不具合の位置をマーク）</div>
+            <div class="controls no-print">
+                <label class="btn btn-photo">
+                    📷 全体を撮る
+                    <input type="file" onchange="handleImage(this, 'canvas_map')" accept="image/*" capture="environment" style="display:none;">
+                </label>
+                <button class="btn btn-clear" onclick="clearCanvas('canvas_map')">リセット</button>
+            </div>
+            <div class="canvas-container" id="container_map">
+                <canvas id="canvas_map"></canvas>
+                <div class="placeholder-text" id="text_map">全体図を撮影し、赤ペンで場所を囲んでください</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action-buttons no-print">
+    <button class="btn-main btn-print" onclick="window.print()">PDFで保存・印刷</button>
+    <button class="btn-main btn-save" id="saveButton" onclick="saveAsImage()">画像を保存 (ダウンロード)</button>
+</div>
+
+<script>
+    window.onload = function() {
+        document.getElementById('discoveryDate').valueAsDate = new Date();
+        initCanvas('canvas_detail');
+        initCanvas('canvas_map');
+    };
+
+    const state = {
+        canvas_detail: { canvas: null, ctx: null, img: null, drawing: false },
+        canvas_map: { canvas: null, ctx: null, img: null, drawing: false }
+    };
+
+    function initCanvas(id) {
+        const c = document.getElementById(id);
+        if (!c) return;
+        state[id].canvas = c;
+        state[id].ctx = c.getContext('2d');
+
+        const options = { passive: false };
+        c.addEventListener('mousedown', (e) => startDraw(e, id));
+        c.addEventListener('mousemove', (e) => moveDraw(e, id));
+        window.addEventListener('mouseup', stopDraw);
+        c.addEventListener('touchstart', (e) => { startDraw(e, id); }, options);
+        c.addEventListener('touchmove', (e) => { e.preventDefault(); moveDraw(e, id); }, options);
+        c.addEventListener('touchend', stopDraw);
+    }
+
+    function handleImage(input, id) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const placeholder = document.getElementById('text_' + (id === 'canvas_detail' ? 'detail' : 'map'));
+        placeholder.innerText = "読み込み中...";
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                state[id].img = img;
+                placeholder.style.display = 'none';
+                fitToContainer(id);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function fitToContainer(id) {
+        const s = state[id];
+        if (!s.img) return;
+        const container = s.canvas.parentElement;
+        const ratio = Math.min(container.clientWidth / s.img.width, container.clientHeight / s.img.height);
+        s.canvas.width = s.img.width * ratio;
+        s.canvas.height = s.img.height * ratio;
+        drawBase(id);
+    }
+
+    function drawBase(id) {
+        const s = state[id];
+        if(!s.ctx) return;
+        s.ctx.clearRect(0, 0, s.canvas.width, s.canvas.height);
+        if (s.img) {
+            s.ctx.drawImage(s.img, 0, 0, s.canvas.width, s.canvas.height);
+        }
+    }
+
+    function startDraw(e, id) {
+        if (!state[id].img) return;
+        state[id].drawing = true;
+        state[id].ctx.beginPath();
+        const pos = getPos(e, state[id].canvas);
+        state[id].ctx.moveTo(pos.x, pos.y);
+    }
+
+    function moveDraw(e, id) {
+        const s = state[id];
+        if (!s.drawing) return;
+        const pos = getPos(e, s.canvas);
+        s.ctx.lineWidth = 5;
+        s.ctx.lineCap = 'round';
+        s.ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+        s.ctx.lineTo(pos.x, pos.y);
+        s.ctx.stroke();
+        s.ctx.beginPath();
+        s.ctx.moveTo(pos.x, pos.y);
+    }
+
+    function stopDraw() {
+        Object.values(state).forEach(s => s.drawing = false);
+    }
+
+    function getPos(e, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { 
+            x: (clientX - rect.left) * (canvas.width / rect.width), 
+            y: (clientY - rect.top) * (canvas.height / rect.height) 
+        };
+    }
+
+    function clearCanvas(id) {
+        if (!state[id].img) return;
+        if(confirm("書き込みを消去しますか？（写真は残ります）")) drawBase(id);
+    }
+
+    async function saveAsImage() {
+        if (typeof html2canvas === 'undefined') {
+            alert("ライブラリを読み込んでいます。数秒待ってからやり直してください。");
+            return;
+        }
+
+        const captureArea = document.getElementById('capture-area');
+        const btn = document.getElementById('saveButton');
+        btn.innerText = "生成中...";
+        btn.disabled = true;
+
+        try {
+            const canvas = await html2canvas(captureArea, {
+                useCORS: true,
+                scale: 2,
+                backgroundColor: "#ffffff",
+            });
+            const date = document.getElementById('discoveryDate').value.replace(/-/g, '');
+            const kanban = document.getElementById('kanbanNo').value || "NoKanban";
+            const fileName = `エビデンス_${date}_${kanban}.png`;
+
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        } catch (error) {
+            alert("エラーが発生しました。PDF保存をお試しください。");
+        } finally {
+            btn.innerText = "画像を保存 (ダウンロード)";
+            btn.disabled = false;
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        if(state.canvas_detail.img) fitToContainer('canvas_detail');
+        if(state.canvas_map.img) fitToContainer('canvas_map');
+    });
+</script>
+
+</body>
+</html>
